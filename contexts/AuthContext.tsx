@@ -69,6 +69,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 path: '/', //todas as rotas tem acesso ao cookie
             })
 
+            api.defaults.headers.common.Authorization = `Bearer ${token}`;  
+            
             setUser({
                 email,
                 permissions,
