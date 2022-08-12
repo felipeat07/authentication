@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
-import { parseCookies, setCookie } from 'nookies'
+import  Router  from 'next/router';
+import { destroyCookie, parseCookies, setCookie } from 'nookies'
 
 let isRefreshing = false;
 let failedRequestsQueue: any[] = [];
@@ -36,7 +37,7 @@ api.interceptors.response.use(response => {
                     path: '/', //todas as rotas tem acesso ao cookie
                 })
     
-                api.defaults.headers.common.Authorization = `Bearer ${token}`; 
+                api.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
 
                 failedRequestsQueue.forEach(request => request.onSuccess(token))
                 failedRequestsQueue = []
@@ -54,7 +55,7 @@ api.interceptors.response.use(response => {
            return new Promise((resolve, reject) => {
                 failedRequestsQueue.push({
                     onSuccess: (token: string) => {
-                        originalConfig.headers.common.Authorization = `Bearer ${token}`;
+                        originalConfig.headers.common['Authorization'] = `Bearer ${token}`;
 
                         resolve(api(originalConfig))
                     },
@@ -66,7 +67,12 @@ api.interceptors.response.use(response => {
 
 
         } else {
-            //deslogar usuário
+            destroyCookie(undefined, 'authToken')
+            destroyCookie(undefined, 'refreshAuthToken')
+
+            Router.push('/')
         }
     }
+
+    return Promise.reject(error);
 })

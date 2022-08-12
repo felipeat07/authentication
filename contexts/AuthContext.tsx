@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { parseCookies, setCookie } from 'nookies'
+import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import Router from 'next/router'
 import { api } from "../services/api";
 
@@ -45,6 +45,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
                     roles,
                 })
             })
+            .catch(() => {
+                destroyCookie(undefined, 'authToken')
+                destroyCookie(undefined, 'refreshAuthToken')
+
+                Router.push('/')
+            })
         }
 
     }, [])
@@ -69,7 +75,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 path: '/', //todas as rotas tem acesso ao cookie
             })
 
-            api.defaults.headers.common.Authorization = `Bearer ${token}`;  
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;  
             
             setUser({
                 email,
