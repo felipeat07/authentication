@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios'
 import { appendFile } from 'fs';
 import  Router  from 'next/router';
 import { destroyCookie, parseCookies, setCookie } from 'nookies'
+import { AuthTokenError } from './error/AuthTokenError';
 
 let isRefreshing = false;
 let failedRequestsQueue: any[] = [];
@@ -82,6 +83,8 @@ export function setupAPIClient(ctx = undefined) {
                     destroyCookie(undefined, 'refreshAuthToken')
         
                     Router.push('/')
+                }else{
+                return Promise.reject(new AuthTokenError()) 
                 }
     
             }
