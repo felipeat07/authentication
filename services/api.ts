@@ -9,7 +9,7 @@ let failedRequestsQueue: any[] = [];
 
 
 
-export function setupAPIClient(ctx = undefined) {
+export function setupAPIClient(ctx: any) {
     let { authToken } = parseCookies(ctx)
 
     const api = axios.create({

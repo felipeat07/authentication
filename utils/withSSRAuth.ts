@@ -3,8 +3,8 @@ import { destroyCookie, parseCookies } from "nookies";
 import { AuthTokenError } from "../services/error/AuthTokenError";
 
 
-export function withSSRAuth<P>(fn: GetServerSideProps<P>) {
-  return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
+export function withSSRAuth(fn: GetServerSideProps) {
+  return async (ctx: GetServerSidePropsContext)=> {
     const cookies = parseCookies(ctx)
 
     if (!cookies['authToken']) {
